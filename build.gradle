@@ -6,6 +6,7 @@ group 'org.example'
 version '1.0-SNAPSHOT'
 
 repositories {
+    maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
     mavenCentral()
 }
 
@@ -14,6 +15,7 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok:1.18.22'
 
     implementation 'org.slf4j:slf4j-simple:1.7.30'
+    implementation 'io.reactivex.rxjava3:rxjava:3.0.0-SNAPSHOT'
 
     testCompileOnly 'org.projectlombok:lombok:1.18.22'
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.22'
