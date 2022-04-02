@@ -2,6 +2,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 
 import java.util.Objects;
+import java.util.concurrent.*;
 import java.util.function.Function;
 
 @Slf4j
@@ -34,5 +35,42 @@ public class FutureTest {
                 return v1 + v2;
             };
         }
+    }
+
+
+    @Test
+    public void oldFutureTest() {
+        ExecutorService executor = Executors.newCachedThreadPool();
+        Future<Double> future = executor.submit(new Callable<Double>() {
+            @Override
+            public Double call() throws Exception {
+                return doSomeLongComputation();
+            }
+
+            private Double doSomeLongComputation() {
+                log.info("doing some long computation");
+                return 1.1;
+            }
+        });
+
+        doSomethingElse();
+
+        try {
+            // get 을 하는 순간 계산이 완료되었다면 즉시 결과를 반환하겠지만
+            // 그렇지 않다면 준비될 때 까지 현재 스레드를 block 시킨다.
+            Double result = future.get(1, TimeUnit.SECONDS);
+        } catch(ExecutionException e) {
+            log.error("{}", e);
+        } catch (InterruptedException ie) {
+            log.error("{}", ie);
+        } catch (TimeoutException te) {
+            log.error("{}", te);
+        }
+
+        log.info("finish");
+    }
+
+    private void doSomethingElse() {
+        log.info("doing something else");
     }
 }
